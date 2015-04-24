@@ -1,0 +1,22 @@
+---
+- name: apply common configuration
+  hosts: all
+  roles:
+  - common
+
+- name: set up openshift build hosts
+  hosts: osv3_masters
+  roles:
+  # uncomment one of these install methods:
+  # (this will eventually be replaced by some openshift role(s) from
+  # openshift-ansible)
+  - install_openshift_copr
+  #- install_openshift_source # useful only for ARM builds
+
+  # change behind_auth_proxy to true when using kerberos proxy
+  - { role: osbs_builder, behind_auth_proxy: false }
+
+- name: set up kerberos proxy
+  hosts: krb_proxies
+  roles:
+  - kerberos_proxy

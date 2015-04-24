@@ -1,0 +1,5 @@
+---
+rpmbuild_dir: "{{ ansible_env.HOME }}/rpmbuild"
+openshift_commit: 266ce4cfc8785b0633c24a46cd0aff927b8e90b2
+openshift_archive: origin-{{ openshift_commit }}.tar.gz
+openshift_version: 0.4.3

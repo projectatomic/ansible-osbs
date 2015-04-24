@@ -1,0 +1,24 @@
+---
+## buildroot base image source
+#buildroot_registry: my.registry.example.com
+#buildroot_registry_insecure: true
+#buildroot_base_image: namespace/image:tag
+#buildroot_base_image_retag: expected-base-image-name
+
+## buildroot dockerfile source
+#buildroot_git_url: https://github.com/me/osbs-buildroot-docker
+#buildroot_git_path: "{{ ansible_env.HOME }}/osbs-buildroot-docker"
+#buildroot_git_subdir: ""
+#buildroot_git_branch: some_branch
+
+## kerberos
+#kerberos_client_realm_name: EXAMPLE.COM
+#kerberos_client_kdc_hostname: kerberos.brq
+#kerberos_client_admin_hostname: kerberos.brq
+
+#proxy_authname: OSBS Kerberos Authentication
+
+# used for mutually authenticating the proxy and the proxied machine
+#proxy_machine_ca_file: /var/lib/openshift/openshift.local.certificates/ca/cert.crt
+#proxy_machine_cert_file: /var/lib/openshift/openshift.local.certificates/openshift-client/cert.crt
+#proxy_machine_key_file: /var/lib/openshift/openshift.local.certificates/openshift-client/key.key

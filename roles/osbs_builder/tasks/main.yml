@@ -1,0 +1,107 @@
+---
+- name: install packages required by osbs
+  yum: name={{ item }} state=installed
+  with_items:
+  - bind-utils
+  - iptables-services
+  - bridge-utils
+  - dock
+  - docker
+  - docker-registry
+
+### docker service ###
+
+- name: ensure docker is running
+  service: name=docker state=started enabled=yes
+
+- name: configure docker
+  template: src=sysconfig-docker.j2 dest=/etc/sysconfig/docker
+  register: docker_sysconfig
+
+- name: restart docker after changing configuration
+  service: name=docker state=restarted
+  when: docker_sysconfig.changed
+
+### openshift service ###
+
+# Permanent rules aren't applied immediately. Starting with ansible 1.9,
+# these two rules can be merged into one with permanent=true immediate=true.
+- name: open openshift port in the firewall
+  firewalld: port={{ openshift_port }}/tcp state=enabled permanent={{ item }}
+  with_items:
+  - true
+  - false
+  when: not behind_auth_proxy
+
+- name: close openshift port in the firewall
+  firewalld: port={{ openshift_port }}/tcp state=disabled permanent={{ item }}
+  with_items:
+  - true
+  - false
+  when: behind_auth_proxy
+
+# IIUC direct connection to kubelets (10250) won't be necessary in the
+# future. In this case the following two tasks should be deleted.
+- name: open kubelet port in the firewall
+  firewalld: port=10250/tcp state=enabled permanent={{ item }}
+  with_items:
+  - true
+  - false
+
+- name: ensure openshift is running
+  service: name=openshift state=started enabled=yes
+
+- name: wait for openshift to start accepting connections
+  wait_for: port={{ openshift_port }} timeout=30
+
+# Set up authorization policy. If we are behind proxy then add authenticated users as cluster-admins.
+# If we are not (=debug), add both authenticated and unauthenticated users as
+# cluster-admins. For now we are using the cluster-admin group because the edit
+# group cannot watch build logs (it seems).
+- name: openshift auth - clear
+  shell: openshift ex policy -n master remove-role-from-group cluster-admin system:authenticated system:unauthenticated
+  environment: osc_environment
+
+- name: openshift auth - make everyone cluster admin
+  shell: openshift ex policy -n master add-role-to-group cluster-admin system:unauthenticated system:authenticated
+  environment: osc_environment
+  when: not behind_auth_proxy
+
+- name: openshift auth - authenticated users are cluster admins
+  shell: openshift ex policy -n master add-role-to-group cluster-admin system:authenticated
+  environment: osc_environment
+  when: behind_auth_proxy
+
+# Useful when using "osc" to inspect openshift state.
+- name: add KUBECONFIG to .bashrc
+  lineinfile:
+    dest: "{{ ansible_env.HOME }}/.bashrc"
+    regexp: "export KUBECONFIG="
+    line: "export KUBECONFIG={{ kubeconfig_path }}"
+
+- name: add CURL_CA_BUNDLE to .bashrc
+  lineinfile:
+    dest: "{{ ansible_env.HOME }}/.bashrc"
+    regexp: "export CURL_CA_BUNDLE="
+    line: "export CURL_CA_BUNDLE={{ openshift_ca_path }}"
+
+### buildroot image ###
+
+- name: pull buildroot base image
+  command: docker pull {{ buildroot_registry }}/{{ buildroot_base_image }}
+
+- name: tag buildroot base image
+  command: docker tag -f {{ buildroot_registry }}/{{ buildroot_base_image }} {{ buildroot_base_image_retag }}
+  when: buildroot_base_image_retag is defined
+
+- name: pull build image git repository
+  git:
+    repo: "{{ buildroot_git_url }}"
+    dest: "{{ buildroot_git_local_path }}"
+    version: "{{ buildroot_git_branch }}"
+    accept_hostkey: yes
+  register: buildroot_git_repo
+
+- name: build buildroot
+  command: docker build --no-cache=true --tag={{ buildroot_tag }} {{ buildroot_git_local_path }}/{{ buildroot_git_subdir }}
+  when: buildroot_git_repo.changed
