@@ -85,6 +85,7 @@
   with_items:
   - true
   - false
+  when: manage_firewall
 
 - name: ensure httpd is running
   service: name=httpd state=started enabled=yes

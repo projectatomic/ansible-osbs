@@ -31,14 +31,14 @@
   with_items:
   - true
   - false
-  when: not behind_auth_proxy
+  when: not behind_auth_proxy and manage_firewall
 
 - name: close openshift port in the firewall
   firewalld: port={{ openshift_port }}/tcp state=disabled permanent={{ item }}
   with_items:
   - true
   - false
-  when: behind_auth_proxy
+  when: behind_auth_proxy and manage_firewall
 
 # IIUC direct connection to kubelets (10250) won't be necessary in the
 # future. In this case the following two tasks should be deleted.
@@ -47,6 +47,7 @@
   with_items:
   - true
   - false
+  when: manage_firewall
 
 - name: ensure openshift is running
   service: name=openshift state=started enabled=yes

@@ -27,3 +27,6 @@ kerberos_client_forwardable: true
 
 # extra verbose httpd logs?
 proxy_debug: false
+
+# set to false if you don't use firewalld or do not want the playbook to modify it
+manage_firewall: true

@@ -17,3 +17,6 @@ buildroot_git_local_path: "{{ ansible_env.HOME }}/osbs-buildroot-docker"
 # and require users to be authenticated
 # set to false for debugging
 behind_auth_proxy: true
+
+# set to false if you don't use firewalld or do not want the playbook to modify it
+manage_firewall: true
