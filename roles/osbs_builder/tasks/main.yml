@@ -49,6 +49,30 @@
   - false
   when: manage_firewall
 
+- name: generate basic openshift configuration
+  command: openshift start --write-config --master-config={{ openshift_home }}/master.yaml --node-config={{ openshift_home }}/node.yaml
+  args:
+    chdir: "{{ openshift_home }}"
+    creates: "{{ openshift_home }}/master.yaml"
+  register: openshift_basic_config
+
+- name: configure openshift
+  template: src={{ item }}.yaml.j2 dest={{ openshift_home }}/{{ item }}.yaml
+  with_items:
+  - master
+  - node
+  register: openshift_config
+
+- name: generate certificate for auth proxy
+  command: openshift admin create-api-client-config --client-dir={{ openshift_proxy_cert_dir }}/ --user=auth-proxy
+  args:
+    chdir: "{{ openshift_home }}"
+    creates: "{{ openshift_proxy_cert_dir }}/cert.crt"
+
+- name: restart openshift after changing configuration
+  service: name=openshift state=restarted
+  when: openshift_basic_config.changed or openshift_config.changed
+
 - name: ensure openshift is running
   service: name=openshift state=started enabled=yes
 
@@ -60,16 +84,16 @@
 # cluster-admins. For now we are using the cluster-admin group because the edit
 # group cannot watch build logs (it seems).
 - name: openshift auth - clear
-  shell: openshift ex policy -n master remove-role-from-group cluster-admin system:authenticated system:unauthenticated
+  command: openshift ex policy -n master remove-role-from-group cluster-admin system:authenticated system:unauthenticated
   environment: osc_environment
 
 - name: openshift auth - make everyone cluster admin
-  shell: openshift ex policy -n master add-role-to-group cluster-admin system:unauthenticated system:authenticated
+  command: openshift ex policy -n master add-role-to-group cluster-admin system:unauthenticated system:authenticated
   environment: osc_environment
   when: not behind_auth_proxy
 
 - name: openshift auth - authenticated users are cluster admins
-  shell: openshift ex policy -n master add-role-to-group cluster-admin system:authenticated
+  command: openshift ex policy -n master add-role-to-group cluster-admin system:authenticated
   environment: osc_environment
   when: behind_auth_proxy
 

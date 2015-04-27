@@ -4,6 +4,3 @@
 
 - name: install openshift
   yum: name=openshift-{{ openshift_version }}*osbs* state=installed
-
-- name: generate configuration
-  service: name=openshift-generate-conf state=started

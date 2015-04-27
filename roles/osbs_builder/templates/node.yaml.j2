@@ -1,0 +1,17 @@
+allowDisabledDocker: true
+apiVersion: v1
+dnsDomain: local
+dnsIP: {{ ansible_default_ipv4.address }}
+imageConfig:
+  format: openshift/origin-${component}:${version}
+  latest: false
+kind: NodeConfig
+masterKubeConfig: openshift.local.certificates/node-{{ ansible_fqdn }}/.kubeconfig
+nodeName: {{ ansible_fqdn }}
+recordEvents: false
+servingInfo:
+  bindAddress: 0.0.0.0:10250
+  certFile: openshift.local.certificates/node-{{ ansible_fqdn }}/server.crt
+  clientCA: openshift.local.certificates/ca/cert.crt
+  keyFile: openshift.local.certificates/node-{{ ansible_fqdn }}/server.key
+volumeDirectory: openshift.local.volumes
