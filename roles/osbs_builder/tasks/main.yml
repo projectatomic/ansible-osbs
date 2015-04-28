@@ -63,11 +63,22 @@
   - node
   register: openshift_config
 
-- name: generate certificate for auth proxy
-  command: openshift admin create-api-client-config --client-dir={{ openshift_proxy_cert_dir }}/ --user=auth-proxy
+- name: generate cert for authenticating proxy - self-signed certificate
+  command: >
+    openssl req -new -nodes -x509
+    -subj "/C=CZ/ST=SelfSigned/L=SelfSigned/O=IT/CN={{ ansible_fqdn }}"
+    -days 3650
+    -keyout {{ proxy_auth_key_file }}
+    -out {{ proxy_auth_cert_file }}
+    -extensions v3_ca
   args:
-    chdir: "{{ openshift_home }}"
-    creates: "{{ openshift_proxy_cert_dir }}/cert.crt"
+    creates: "{{ proxy_auth_cert_file }}"
+  when: behind_auth_proxy and proxy_auth_generate_selfsigned
+  register: auth_proxy_cert
+
+- name: generate cert for authenticating proxy - convert privkey to rsa
+  command: openssl rsa -in {{ proxy_auth_key_file }} -out {{ proxy_auth_key_file }}
+  when: auth_proxy_cert.changed
 
 - name: restart openshift after changing configuration
   service: name=openshift state=restarted

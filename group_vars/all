@@ -11,6 +11,12 @@
 #buildroot_git_subdir: ""
 #buildroot_git_branch: some_branch
 
+## for authenticating the proxy to openshift using self-signed certificate
+#proxy_auth_generate_selfsigned: true
+#proxy_auth_cert_file: "{{ openshift_home }}/proxy_auth_cert.pem"
+#proxy_auth_key_file: "{{ openshift_home }}/proxy_auth_key.pem"
+#proxy_auth_ca_file: "{{ proxy_auth_cert_file }}"
+
 ## kerberos
 #kerberos_client_realm_name: EXAMPLE.COM
 #kerberos_client_kdc_hostname: kerberos.brq
@@ -20,8 +26,8 @@
 
 # used for mutually authenticating the proxy and the proxied machine
 #proxy_machine_ca_file: /var/lib/openshift/openshift.local.certificates/ca/cert.crt
-#proxy_machine_cert_file: /var/lib/openshift/openshift.local.certificates/openshift-client/cert.crt
-#proxy_machine_key_file: /var/lib/openshift/openshift.local.certificates/openshift-client/key.key
+#proxy_machine_cert_file: /var/lib/openshift/proxy_auth_cert.pem
+#proxy_machine_key_file: /var/lib/openshift/proxy_auth_key.pem
 
 # set to false if you don't use firewalld or do not want the playbook to modify it
 #manage_firewall: true

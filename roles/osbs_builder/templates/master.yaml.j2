@@ -64,7 +64,7 @@ oauthConfig:
     provider:
       apiVersion: v1
       kind: RequestHeaderIdentityProvider
-      clientCA: openshift.local.certificates/proxy/ca.crt
+      clientCA: {{ proxy_auth_ca_file | default('openshift.local.certificates/ca/cert.crt') }}
       headers:
       - X-Remote-User
   masterPublicURL: https://{{ ansible_default_ipv4.address }}:8443
