@@ -42,8 +42,6 @@
 
 - name: create proxy client cert+key file
   shell: cat {{ proxy_machine_cert_file }} {{ proxy_machine_key_file}} > {{ ssl_client_certkey_file }}
-  args:
-    creates: "{{ ssl_client_certkey_file }}"
   when: proxy_machine_cert_file is defined
   register: certkey_file
   notify:
