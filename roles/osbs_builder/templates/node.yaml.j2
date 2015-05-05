@@ -7,8 +7,9 @@ imageConfig:
   latest: false
 kind: NodeConfig
 masterKubeConfig: openshift.local.certificates/node-{{ ansible_fqdn }}/.kubeconfig
+networkPluginName: ""
 nodeName: {{ ansible_fqdn }}
-recordEvents: false
+podManifestConfig: null
 servingInfo:
   bindAddress: 0.0.0.0:10250
   certFile: openshift.local.certificates/node-{{ ansible_fqdn }}/server.crt

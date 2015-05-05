@@ -6,5 +6,5 @@ openshift_proxy_cert_dir: "{{ openshift_home }}/openshift.local.certificates/pro
 openshift_port: 8443
 
 osc_environment:
-  KUBECONFIG: "{{ kubeconfig_path }}"
+  OPENSHIFTCONFIG: "{{ kubeconfig_path }}"
   CURL_CA_BUNDLE: "{{ openshift_ca_path }}"

@@ -34,6 +34,9 @@ etcdConfig:
     clientCA: openshift.local.certificates/ca/cert.crt
     keyFile: openshift.local.certificates/etcd/server.key
   storageDirectory: openshift.local.etcd
+etcdStorageConfig:
+  kubernetesStorageVersion: v1beta3
+  openShiftStorageVersion: v1beta1
 imageConfig:
   format: openshift/origin-${component}:${version}
   latest: false
@@ -46,13 +49,14 @@ kubeletClientInfo:
 kubernetesMasterConfig:
   masterIP: {{ ansible_default_ipv4.address }}
   schedulerConfigFile: ""
-  servicesSubnet: 172.30.17.0/24
+  servicesSubnet: 172.30.0.0/16
   staticNodeNames:
   - {{ ansible_fqdn }}
 masterClients:
   deployerKubeConfig: openshift.local.certificates/openshift-deployer/.kubeconfig
   kubernetesKubeConfig: openshift.local.certificates/kube-client/.kubeconfig
   openshiftLoopbackKubeConfig: openshift.local.certificates/openshift-client/.kubeconfig
+masterPublicURL: https://{{ ansible_default_ipv4.address }}:8443
 oauthConfig:
   assetPublicURL: https://{{ ansible_default_ipv4.address }}:8443/console/
   grantConfig:
@@ -74,7 +78,7 @@ oauthConfig:
     sessionName: ssn
     sessionSecretsFile: ""
   tokenConfig:
-    accessTokenMaxAgeSeconds: 3600
+    accessTokenMaxAgeSeconds: 86400
     authorizeTokenMaxAgeSeconds: 300
 policyConfig:
   bootstrapPolicyFile: openshift.local.policy/policy.json

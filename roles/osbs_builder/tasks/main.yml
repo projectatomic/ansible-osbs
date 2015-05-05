@@ -49,11 +49,11 @@
   - false
   when: manage_firewall
 
-- name: generate basic openshift configuration
+- name: generate basic openshift configuration and certificates
   command: openshift start --write-config --master-config={{ openshift_home }}/master.yaml --node-config={{ openshift_home }}/node.yaml
   args:
     chdir: "{{ openshift_home }}"
-    creates: "{{ openshift_home }}/master.yaml"
+    creates: "{{ kubeconfig_path }}"
   register: openshift_basic_config
 
 - name: configure openshift
@@ -109,11 +109,11 @@
   when: behind_auth_proxy
 
 # Useful when using "osc" to inspect openshift state.
-- name: add KUBECONFIG to .bashrc
+- name: add OPENSHIFTCONFIG to .bashrc
   lineinfile:
     dest: "{{ ansible_env.HOME }}/.bashrc"
-    regexp: "export KUBECONFIG="
-    line: "export KUBECONFIG={{ kubeconfig_path }}"
+    regexp: "export OPENSHIFTCONFIG="
+    line: "export OPENSHIFTCONFIG={{ kubeconfig_path }}"
 
 - name: add CURL_CA_BUNDLE to .bashrc
   lineinfile:

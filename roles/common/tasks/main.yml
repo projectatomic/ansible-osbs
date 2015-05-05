@@ -8,6 +8,7 @@
   - git
   - net-tools
   - yum-utils
+  - tree
 
 - name: enable rhel7 repos
   command: yum-config-manager --enable {{ item }}
