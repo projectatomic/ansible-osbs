@@ -115,12 +115,6 @@
     regexp: "export OPENSHIFTCONFIG="
     line: "export OPENSHIFTCONFIG={{ kubeconfig_path }}"
 
-- name: add CURL_CA_BUNDLE to .bashrc
-  lineinfile:
-    dest: "{{ ansible_env.HOME }}/.bashrc"
-    regexp: "export CURL_CA_BUNDLE="
-    line: "export CURL_CA_BUNDLE={{ openshift_ca_path }}"
-
 ### buildroot image ###
 
 - name: pull buildroot base image

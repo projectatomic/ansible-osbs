@@ -1,10 +1,7 @@
 ---
 openshift_home: /var/lib/openshift
 kubeconfig_path: "{{ openshift_home }}/openshift.local.certificates/admin/.kubeconfig"
-openshift_ca_path: "{{ openshift_home }}/openshift.local.certificates/ca/cert.crt"
-openshift_proxy_cert_dir: "{{ openshift_home }}/openshift.local.certificates/proxy"
 openshift_port: 8443
 
 osc_environment:
   OPENSHIFTCONFIG: "{{ kubeconfig_path }}"
-  CURL_CA_BUNDLE: "{{ openshift_ca_path }}"
