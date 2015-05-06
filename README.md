@@ -15,7 +15,8 @@ You should be able to use the plabook to deploy OSBS suitable for development
 hosts.
 
 Simply put your host under the `osv3_masters` section, possibly with [ansible
-connection parameters][1]:
+connection parameters][1] (e.g. `ansible_sudo=true` if you are logging in as
+non-root):
 
     [osv3_masters]
     hostname_or_ip_of_your_host ansible_ssh_user=root
