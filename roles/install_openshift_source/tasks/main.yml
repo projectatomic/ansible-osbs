@@ -23,12 +23,6 @@
 - name: upload SPEC
   template: src=openshift.spec.j2 dest={{ rpmbuild_dir }}/SPECS/openshift.spec
 
-- name: upload sources
-  copy: src={{ item }} dest={{ rpmbuild_dir }}/SOURCES/{{ item }}
-  with_items:
-  - openshift.sysconfig
-  - openshift.service
-
 - name: install build dependencies
   command: yum-builddep -y {{ rpmbuild_dir }}/SPECS/openshift.spec
 
@@ -45,5 +39,4 @@
   register: find_rpms
 
 - name: install the RPMs
-  yum: name={{ item }} state=installed
-  with_items: find_rpms.stdout.split()
+  shell: yum -y localinstall {{ rpmbuild_dir }}/RPMS/x86_64/*openshift*.rpm

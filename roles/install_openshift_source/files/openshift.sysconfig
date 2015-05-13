@@ -1,4 +1,0 @@
-OPTIONS="--loglevel=5"
-IMAGES='openshift/origin-${component}:${version}'
-OPENSHIFT_OAUTH_REQUEST_HANDLERS=requestheader,session,bearer
-OPENSHIFT_OAUTH_REQUEST_HEADER_CA_FILE=/var/lib/openshift/openshift.local.certificates/ca/cert.crt
