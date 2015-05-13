@@ -49,19 +49,28 @@
   - false
   when: manage_firewall
 
-- name: generate basic openshift configuration and certificates
-  command: openshift start --write-config --master-config={{ openshift_home }}/master.yaml --node-config={{ openshift_home }}/node.yaml
-  args:
-    chdir: "{{ openshift_home }}"
-    creates: "{{ kubeconfig_path }}"
-  register: openshift_basic_config
-
-- name: configure openshift
-  template: src={{ item }}.yaml.j2 dest={{ openshift_home }}/{{ item }}.yaml
+- name: modifications in /etc/sysconfig/openshift
+  copy: src=sysconfig-openshift-{{ item }} dest=/etc/sysconfig/openshift-{{ item }}
   with_items:
   - master
   - node
-  register: openshift_config
+
+- name: generate basic openshift configuration and certificates
+  command: openshift start --write-config=/etc/openshift
+  args:
+    chdir: "{{ openshift_home }}"
+    creates: /etc/openshift/node-{{ ansible_fqdn }}/node-config.yaml
+
+- name: link /etc/openshift/node to actual node directory
+  file: path=/etc/openshift/node src=/etc/openshift/node-{{ ansible_fqdn }} force=yes state=link
+
+- name: configure openshift master
+  template: src=master.yaml.j2 dest=/etc/openshift/master/master-config.yaml
+  register: openshift_master_config
+
+- name: configure openshift node
+  template: src=node.yaml.j2 dest=/etc/openshift/node/node-config.yaml
+  register: openshift_node_config
 
 - name: generate cert for authenticating proxy - self-signed certificate
   command: >
@@ -80,12 +89,19 @@
   command: openssl rsa -in {{ proxy_auth_key_file }} -out {{ proxy_auth_key_file }}
   when: auth_proxy_cert.changed
 
-- name: restart openshift after changing configuration
-  service: name=openshift state=restarted
-  when: openshift_basic_config.changed or openshift_config.changed
+- name: restart openshift master after changing configuration
+  service: name=openshift-master state=restarted
+  when: openshift_master_config.changed
+
+- name: restart openshift node after changing configuration
+  service: name=openshift-node state=restarted
+  when: openshift_node_config.changed
 
 - name: ensure openshift is running
-  service: name=openshift state=started enabled=yes
+  service: name=openshift-{{ item }} state=started enabled=yes
+  with_items:
+  - master
+  - node
 
 - name: wait for openshift to start accepting connections
   wait_for: port={{ openshift_port }} timeout=30
@@ -95,18 +111,20 @@
 # cluster-admins. For now we are using the cluster-admin group because the edit
 # group cannot watch build logs (it seems).
 - name: openshift auth - clear
-  command: openshift ex policy -n master remove-role-from-group cluster-admin system:authenticated system:unauthenticated
+  command: osadm policy -n master remove-role-from-group cluster-admin system:authenticated system:unauthenticated
   environment: osc_environment
 
 - name: openshift auth - make everyone cluster admin
-  command: openshift ex policy -n master add-role-to-group cluster-admin system:unauthenticated system:authenticated
+  command: osadm policy -n master add-role-to-group cluster-admin system:unauthenticated system:authenticated
   environment: osc_environment
   when: not behind_auth_proxy
 
 - name: openshift auth - authenticated users are cluster admins
-  command: openshift ex policy -n master add-role-to-group cluster-admin system:authenticated
+  command: osadm policy -n master add-role-to-group cluster-admin system:authenticated
   environment: osc_environment
   when: behind_auth_proxy
+
+#XXX: delete -n master for 0.5.1
 
 # Useful when using "osc" to inspect openshift state.
 - name: add OPENSHIFTCONFIG to .bashrc

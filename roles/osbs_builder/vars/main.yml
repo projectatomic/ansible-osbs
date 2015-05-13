@@ -1,6 +1,6 @@
 ---
 openshift_home: /var/lib/openshift
-kubeconfig_path: "{{ openshift_home }}/openshift.local.certificates/admin/.kubeconfig"
+kubeconfig_path: /etc/openshift/master/admin.kubeconfig
 openshift_port: 8443
 
 osc_environment:

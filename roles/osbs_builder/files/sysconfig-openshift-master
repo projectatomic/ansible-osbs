@@ -1,0 +1,2 @@
+OPTIONS="--loglevel=3"
+CONFIG_FILE=/etc/openshift/master/master-config.yaml
