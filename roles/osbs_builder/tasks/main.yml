@@ -117,21 +117,14 @@
 
 ### buildroot image ###
 
-- name: pull buildroot base image
-  command: docker pull {{ buildroot_registry }}/{{ buildroot_base_image }}
+- name: pull buildroot image
+  command: docker pull {{ buildroot_pull.registry }}/{{ buildroot_pull.image }}
+  register: pull_buildroot
+  when: not buildroot_from_source
 
-- name: tag buildroot base image
-  command: docker tag -f {{ buildroot_registry }}/{{ buildroot_base_image }} {{ buildroot_base_image_retag }}
-  when: buildroot_base_image_retag is defined
+- name: tag buildroot image
+  command: docker tag -f {{ buildroot_pull.registry }}/{{ buildroot_pull.image }} {{ buildroot_tag }}
+  when: pull_buildroot.changed
 
-- name: pull build image git repository
-  git:
-    repo: "{{ buildroot_git_url }}"
-    dest: "{{ buildroot_git_local_path }}"
-    version: "{{ buildroot_git_branch }}"
-    accept_hostkey: yes
-  register: buildroot_git_repo
-
-- name: build buildroot
-  command: docker build --no-cache=true --tag={{ buildroot_tag }} {{ buildroot_git_local_path }}/{{ buildroot_git_subdir }}
-  when: buildroot_git_repo.changed
+- include: buildroot_from_source.yml
+  when: buildroot_from_source

@@ -1,17 +1,30 @@
 ---
-# buildroot base image source
-buildroot_registry: docker.io
-buildroot_registry_insecure: false
-buildroot_base_image: library/fedora:latest
-# allow retagging the base image to match FROM in Dockerfile
-buildroot_base_image_retag: fedora:latest
+# OSBS expects the build image to be named buildroot
 buildroot_tag: buildroot
 
-# buildroot dockerfile source
-buildroot_git_url: https://github.com/mmilata/osbs-buildroot-osv3.git
-buildroot_git_branch: master
-buildroot_git_subdir: ""
-buildroot_git_local_path: "{{ ansible_env.HOME }}/osbs-buildroot-docker"
+# create build image from source or pull it from a registry?
+# see options below
+buildroot_from_source: true
+
+## for build_buildroot_from_source=false
+buildroot_pull:
+  registry: registry.hub.docker.com
+  registry_insecure: false
+  image: mmilata/buildroot:latest
+
+## for build_buildroot_from_source=true
+buildroot_build:
+  # buildroot base image source
+  base_registry: registry.hub.docker.com
+  base_registry_insecure: false
+  base_image: library/fedora:latest
+  # allow retagging the base image to match FROM in Dockerfile
+  base_image_retag: fedora:latest
+  # buildroot dockerfile source
+  git_url: https://github.com/mmilata/osbs-buildroot-osv3.git
+  git_branch: master
+  git_subdir: ""
+  git_local_path: "{{ ansible_env.HOME }}/osbs-buildroot-docker"
 
 # is authenticating proxy in front of us? if true, do not expose openshift port
 # and require users to be authenticated
