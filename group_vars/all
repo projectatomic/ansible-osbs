@@ -1,4 +1,8 @@
 ---
+# set hostname of each machine to the corresponding fqdn in inventory (hosts)
+# file
+#set_hostname: false
+
 # create build image from source or pull it from a registry?
 # see options below
 #buildroot_from_source: true

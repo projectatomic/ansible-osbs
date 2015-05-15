@@ -1,4 +1,8 @@
 ---
+- name: set hostname
+  hostname: name={{ ansible_fqdn }}
+  when: set_hostname
+
 - name: install basic packages
   yum: name={{ item }} state=installed
   with_items:
