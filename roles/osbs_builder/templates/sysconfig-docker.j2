@@ -16,7 +16,7 @@ ADD_REGISTRY='--add-registry registry.access.redhat.com'
 # If you have a registry secured with https but do not have proper certs destributed, you can
 # tell docker to not look for full authorization by adding the registry to the
 # INSECURE_REGISTRY line and uncommentin it.
-INSECURE_REGISTRY='{% if buildroot_build.base_registry_insecure %}--insecure-registry {{ buildroot_build.base_registry }}{% elif buildroot_pull.registry_insecure %}--insecure--registry {{ buildroot_pull.registry }}{% endif %}'
+INSECURE_REGISTRY='{% if buildroot_build.base_registry_insecure %}--insecure-registry {{ buildroot_build.base_registry }}{% elif buildroot_pull.registry_insecure %}--insecure--registry {{ buildroot_pull.registry }}{% endif %}{% for r in insecure_registries %} --insecure-registry {{ r }}{% endfor %}'
 
 # On an SELinux system, if you remove the --selinux-enabled option, you
 # also need to turn on the docker_transition_unconfined boolean.

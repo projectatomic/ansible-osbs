@@ -27,6 +27,10 @@
 #  git_subdir: ""
 #  git_local_path: "{{ ansible_env.HOME }}/osbs-buildroot-docker"
 
+## docker needs to know which registries are insecure
+#insecure_registries:
+#  - registry.example.org
+
 ## for authenticating the proxy to openshift using self-signed certificate
 #proxy_auth_generate_selfsigned: true
 #proxy_auth_cert_file: "{{ openshift_home }}/proxy_auth_cert.pem"

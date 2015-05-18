@@ -26,6 +26,9 @@ buildroot_build:
   git_subdir: ""
   git_local_path: "{{ ansible_env.HOME }}/osbs-buildroot-docker"
 
+## docker needs to know which registries are insecure
+insecure_registries: []
+
 # is authenticating proxy in front of us? if true, do not expose openshift port
 # and require users to be authenticated
 # set to false for debugging
