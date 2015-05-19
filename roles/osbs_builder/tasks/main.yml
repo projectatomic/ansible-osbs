@@ -40,15 +40,6 @@
   - false
   when: behind_auth_proxy and manage_firewall
 
-# IIUC direct connection to kubelets (10250) won't be necessary in the
-# future. In this case the following two tasks should be deleted.
-- name: open kubelet port in the firewall
-  firewalld: port=10250/tcp state=enabled permanent={{ item }}
-  with_items:
-  - true
-  - false
-  when: manage_firewall
-
 - name: modifications in /etc/sysconfig/openshift
   copy: src=sysconfig-openshift-{{ item }} dest=/etc/sysconfig/openshift-{{ item }}
   with_items:
