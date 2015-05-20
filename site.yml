@@ -11,7 +11,8 @@
   # (this will eventually be replaced by some openshift role(s) from
   # openshift-ansible)
   - install_openshift_copr
-  #- install_openshift_source # useful only for ARM builds
+  # useful mostly for ARM builds or building unreleased git versions
+  #- install_openshift_source
 
   # change behind_auth_proxy to true when using kerberos proxy
   - { role: osbs_builder, behind_auth_proxy: false }
