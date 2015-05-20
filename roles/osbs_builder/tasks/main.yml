@@ -97,22 +97,23 @@
 - name: wait for openshift to start accepting connections
   wait_for: port={{ openshift_port }} timeout=30
 
-# Set up authorization policy. If we are behind proxy then add authenticated users as cluster-admins.
-# If we are not (=debug), add both authenticated and unauthenticated users as
-# cluster-admins. For now we are using the cluster-admin group because the edit
-# group cannot watch build logs (it seems).
+# Set up authorization policy. If we are behind proxy then assign authenticated
+# users the "edit" role which can start builds and watch build logs.
+# If we are not (=debug), add both authenticated and unauthenticated users to
+# the role.
 - name: openshift auth - clear
-  command: osadm policy remove-role-from-group cluster-admin system:authenticated system:unauthenticated
+  command: osadm policy remove-role-from-group edit system:authenticated system:unauthenticated
   environment: osc_environment
-  ignore_errors: true
+  register: command_result
+  failed_when: command_result.rc != 0 and "unable to locate RoleBinding" not in command_result.stderr
 
 - name: openshift auth - make everyone cluster admin
-  command: osadm policy add-role-to-group cluster-admin system:unauthenticated system:authenticated
+  command: osadm policy add-role-to-group edit system:unauthenticated system:authenticated
   environment: osc_environment
   when: not behind_auth_proxy
 
 - name: openshift auth - authenticated users are cluster admins
-  command: osadm policy add-role-to-group cluster-admin system:authenticated
+  command: osadm policy add-role-to-group edit system:authenticated
   environment: osc_environment
   when: behind_auth_proxy
 
