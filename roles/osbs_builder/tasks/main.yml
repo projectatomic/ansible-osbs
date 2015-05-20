@@ -102,16 +102,17 @@
 # cluster-admins. For now we are using the cluster-admin group because the edit
 # group cannot watch build logs (it seems).
 - name: openshift auth - clear
-  command: osadm policy -n master remove-role-from-group cluster-admin system:authenticated system:unauthenticated
+  command: osadm policy remove-role-from-group cluster-admin system:authenticated system:unauthenticated
   environment: osc_environment
+  ignore_errors: true
 
 - name: openshift auth - make everyone cluster admin
-  command: osadm policy -n master add-role-to-group cluster-admin system:unauthenticated system:authenticated
+  command: osadm policy add-role-to-group cluster-admin system:unauthenticated system:authenticated
   environment: osc_environment
   when: not behind_auth_proxy
 
 - name: openshift auth - authenticated users are cluster admins
-  command: osadm policy -n master add-role-to-group cluster-admin system:authenticated
+  command: osadm policy add-role-to-group cluster-admin system:authenticated
   environment: osc_environment
   when: behind_auth_proxy
 

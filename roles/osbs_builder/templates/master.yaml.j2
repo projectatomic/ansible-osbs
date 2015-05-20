@@ -1,3 +1,7 @@
+NetworkConfig:
+  clusterNetworkCIDR: 10.1.0.0/16
+  hostSubnetLength: 8
+  networkPluginName: ""
 apiVersion: v1
 assetConfig:
   logoutURL: ""
@@ -33,7 +37,7 @@ etcdConfig:
     certFile: etcd.server.crt
     clientCA: ca.crt
     keyFile: etcd.server.key
-  storageDirectory: /var/lib/openshift.local.etcd
+  storageDirectory: /var/lib/openshift/openshift.local.etcd
 etcdStorageConfig:
   kubernetesStoragePrefix: kubernetes.io
   kubernetesStorageVersion: v1beta3
@@ -49,6 +53,7 @@ kubeletClientInfo:
   keyFile: master.kubelet-client.key
   port: 10250
 kubernetesMasterConfig:
+  masterCount: 1
   masterIP: {{ ansible_default_ipv4.address }}
   schedulerConfigFile: ""
   servicesSubnet: 172.30.0.0/16
@@ -93,11 +98,10 @@ oauthConfig:
     authorizeTokenMaxAgeSeconds: 300
 policyConfig:
   bootstrapPolicyFile: policy.json
-  masterAuthorizationNamespace: master
   openshiftSharedResourcesNamespace: openshift
 projectRequestConfig:
   projectRequestMessage: ""
-  projectRequestTemplate: openshift/project-request
+  projectRequestTemplate: ""
 servingInfo:
   bindAddress: 0.0.0.0:8443
   certFile: master.server.crt
