@@ -1,6 +1,6 @@
 ### Prerequisites
 
-RHEL 7, CentOS 7, or Fedora host that has:
+RHEL 7 Server, CentOS 7, or Fedora host that has:
 
 * yum repostiories configured (using subscription-manager in case of RHEL),
 * a hostname that resolves to the host's IP (at least) on the host itself,
