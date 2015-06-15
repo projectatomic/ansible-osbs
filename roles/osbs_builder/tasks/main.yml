@@ -117,8 +117,6 @@
   environment: osc_environment
   when: behind_auth_proxy
 
-#XXX: delete -n master for 0.5.1
-
 # Useful when using "osc" to inspect openshift state.
 - name: add OPENSHIFTCONFIG to .bashrc
   lineinfile:

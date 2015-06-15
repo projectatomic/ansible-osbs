@@ -1,7 +1,7 @@
-NetworkConfig:
-  clusterNetworkCIDR: 10.1.0.0/16
-  hostSubnetLength: 8
-  networkPluginName: ""
+apiLevels:
+- v1beta3
+- v1beta1
+- v1
 apiVersion: v1
 assetConfig:
   logoutURL: ""
@@ -42,7 +42,7 @@ etcdStorageConfig:
   kubernetesStoragePrefix: kubernetes.io
   kubernetesStorageVersion: v1beta3
   openShiftStoragePrefix: openshift.io
-  openShiftStorageVersion: v1beta1
+  openShiftStorageVersion: v1beta3
 imageConfig:
   format: openshift/origin-${component}:${version}
   latest: false
@@ -53,8 +53,14 @@ kubeletClientInfo:
   keyFile: master.kubelet-client.key
   port: 10250
 kubernetesMasterConfig:
+  apiLevels:
+  - v1beta1
+  - v1beta2
+  - v1beta3
+  - v1
   masterCount: 1
   masterIP: {{ ansible_default_ipv4.address }}
+  podEvictionTimeout: 5m
   schedulerConfigFile: ""
   servicesSubnet: 172.30.0.0/16
   staticNodeNames:
@@ -64,6 +70,10 @@ masterClients:
   externalKubernetesKubeConfig: ""
   openshiftLoopbackKubeConfig: openshift-client.kubeconfig
 masterPublicURL: https://{{ ansible_default_ipv4.address }}:8443
+networkConfig:
+  clusterNetworkCIDR: 10.1.0.0/16
+  hostSubnetLength: 8
+  networkPluginName: ""
 oauthConfig:
   assetPublicURL: https://{{ ansible_default_ipv4.address }}:8443/console/
   grantConfig:
@@ -99,9 +109,17 @@ oauthConfig:
 policyConfig:
   bootstrapPolicyFile: policy.json
   openshiftSharedResourcesNamespace: openshift
-projectRequestConfig:
+projectConfig:
+  defaultNodeSelector: ""
   projectRequestMessage: ""
   projectRequestTemplate: ""
+serviceAccountConfig:
+  managedNames:
+  - default
+  - builder
+  privateKeyFile: serviceaccounts.private.key
+  publicKeyFiles:
+  - serviceaccounts.public.key
 servingInfo:
   bindAddress: 0.0.0.0:8443
   certFile: master.server.crt

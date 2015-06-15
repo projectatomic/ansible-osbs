@@ -2,6 +2,8 @@ allowDisabledDocker: true
 apiVersion: v1
 dnsDomain: cluster.local
 dnsIP: {{ ansible_default_ipv4.address }}
+dockerConfig:
+  execHandlerName: native
 imageConfig:
   format: openshift/origin-${component}:${version}
   latest: false
