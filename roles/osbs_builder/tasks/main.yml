@@ -102,27 +102,27 @@
 # If we are not (=debug), add both authenticated and unauthenticated users to
 # the role.
 - name: openshift auth - clear
-  command: osadm policy remove-role-from-group edit system:authenticated system:unauthenticated
-  environment: osc_environment
+  command: oadm policy remove-role-from-group edit system:authenticated system:unauthenticated
+  environment: oc_environment
   register: command_result
-  failed_when: command_result.rc != 0 and "unable to locate RoleBinding" not in command_result.stderr
+  failed_when: "command_result | failed and 'unable to locate RoleBinding' not in command_result.stderr"
 
 - name: openshift auth - make everyone cluster admin
-  command: osadm policy add-role-to-group edit system:unauthenticated system:authenticated
-  environment: osc_environment
+  command: oadm policy add-role-to-group edit system:unauthenticated system:authenticated
+  environment: oc_environment
   when: not behind_auth_proxy
 
 - name: openshift auth - authenticated users are cluster admins
-  command: osadm policy add-role-to-group edit system:authenticated
-  environment: osc_environment
+  command: oadm policy add-role-to-group edit system:authenticated
+  environment: oc_environment
   when: behind_auth_proxy
 
-# Useful when using "osc" to inspect openshift state.
-- name: add OPENSHIFTCONFIG to .bashrc
+# Useful when using "oc" to inspect openshift state.
+- name: add KUBECONFIG to .bashrc
   lineinfile:
     dest: "{{ ansible_env.HOME }}/.bashrc"
-    regexp: "export OPENSHIFTCONFIG="
-    line: "export OPENSHIFTCONFIG={{ kubeconfig_path }}"
+    regexp: "export KUBECONFIG="
+    line: "export KUBECONFIG={{ kubeconfig_path }}"
 
 ### buildroot image ###
 
