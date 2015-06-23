@@ -1,13 +1,2 @@
 ---
-ssl_cert_file: /etc/pki/tls/certs/{{ ansible_fqdn }}.crt
-ssl_key_file: /etc/pki/tls/private/{{ ansible_fqdn }}.key
-ssl_client_certkey_file: /etc/httpd/krbproxy_certkey.crt
-ssl_client_ca_file: /etc/httpd/krbproxy_ca.crt
-
-krb_keytab_file: /etc/httpd/HTTP-{{ ansible_fqdn }}.keytab
-
-proxy_secrets_owner: apache
-proxy_secrets_group: root
-proxy_secrets_perms: "0600"
-
 docker_network: 172.17.42.1/16
