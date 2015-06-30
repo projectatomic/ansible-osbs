@@ -4,7 +4,7 @@
 
 - name: tag buildroot base image
   command: docker tag -f {{ buildroot_build.base_registry }}/{{ buildroot_build.base_image }} {{ buildroot_build.base_image_retag }}
-  when: buildroot_base_image_retag is defined
+  when: buildroot_build.base_image_retag is defined
 
 - name: pull build image git repository
   git:
