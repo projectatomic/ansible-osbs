@@ -1,0 +1,5 @@
+---
+pulp_secret_remote_dir: /root/pulp_secrets
+pulp_secret_name: pulpsecret
+pulp_secret_service_account: default
+pulp_secret_kubeconfig: /etc/openshift/master/admin.kubeconfig

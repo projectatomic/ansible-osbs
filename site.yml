@@ -17,6 +17,12 @@
   # change behind_auth_proxy to true when using kerberos proxy
   - { role: osbs_builder, behind_auth_proxy: false }
 
+  # If you want to import pulp certificate and key into openshift to be later
+  # used by atomic-reactor, uncomment the following line and change
+  # pulp_secret_local_dir to a directory that contains pulp.cer an pulp.key
+  # files.
+  #- { role: pulp_secret, pulp_secret_local_dir: /home/username/.pulp }
+
 - name: set up kerberos proxy
   hosts: krb_proxies
   roles:

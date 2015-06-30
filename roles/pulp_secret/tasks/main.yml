@@ -1,0 +1,18 @@
+---
+- name: copy the keys to remote host
+  copy: src={{ pulp_secret_local_dir }}/ dest={{ pulp_secret_remote_dir }}
+
+- name: register keys to openshift
+  command: oc secrets new {{ pulp_secret_name }} pulp.cer={{ pulp_secret_remote_dir }}/pulp.cer pulp.key={{ pulp_secret_remote_dir }}/pulp.key
+  environment:
+    KUBECONFIG: "{{ pulp_secret_kubeconfig }}"
+  register: command_result
+  failed_when: "command_result | failed and 'already exists' not in command_result.stderr"
+
+- name: allow service account to access the secret
+  command: oc secrets add serviceaccount/{{ pulp_secret_service_account }} secrets/{{ pulp_secret_name }} --for=mount
+  environment:
+    KUBECONFIG: "{{ pulp_secret_kubeconfig }}"
+
+- name: delete the keys from remote host
+  file: path={{ pulp_secret_remote_dir }} state=absent
