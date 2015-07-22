@@ -4,13 +4,13 @@ buildroot_tag: buildroot
 
 # create build image from source or pull it from a registry?
 # see options below
-buildroot_from_source: true
+buildroot_from_source: false
 
 ## for build_buildroot_from_source=false
 buildroot_pull:
   registry: registry.hub.docker.com
   registry_insecure: false
-  image: mmilata/buildroot:latest
+  image: slavek/atomic-reactor:latest
 
 ## for build_buildroot_from_source=true
 buildroot_build:
