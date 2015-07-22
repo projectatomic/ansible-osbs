@@ -137,4 +137,3 @@
 
 - include: buildroot_from_source.yml
   when: buildroot_from_source
-  tags: build_buildroot

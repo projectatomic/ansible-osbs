@@ -1,8 +1,8 @@
 ---
-#- name: apply common configuration
-#  hosts: all
-#  roles:
-#  - common
+- name: apply common configuration
+  hosts: all
+  roles:
+  - common
 
 - name: set up openshift build hosts
   hosts: osv3_masters
@@ -10,7 +10,7 @@
   # uncomment one of these install methods:
   # (this will eventually be replaced by some openshift role(s) from
   # openshift-ansible)
-  ##- install_openshift_copr
+  - install_openshift_copr
   # useful mostly for ARM builds or building unreleased git versions
   #- install_openshift_source
 
