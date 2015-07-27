@@ -44,6 +44,12 @@ LogLevel Debug
             Require all granted
             RequestHeader set X-Remote-User {{ ansible_hostname }}
         </If>
+{% for w in proxy_ip_whitelist %}
+        <ElseIf "-R '{{ w.subnet }}'">
+            Require all granted
+            RequestHeader set X-Remote-User {{ w.user }}
+        </ElseIf>
+{% endfor %}
         <Else>
             AuthType Kerberos
             AuthName "{{ proxy_authname }}"

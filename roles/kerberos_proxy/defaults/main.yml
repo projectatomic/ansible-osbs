@@ -25,6 +25,12 @@ proxy_secrets_owner: apache
 proxy_secrets_group: root
 proxy_secrets_perms: "0600"
 
+# manually assign openshift user account to an IP or IP range
+#proxy_ip_whitelist:
+#  - subnet: 1.2.3.4
+#    user: kojibuilder
+proxy_ip_whitelist: []
+
 krb_keytab_file: /etc/httpd/HTTP-{{ ansible_fqdn }}.keytab
 
 kerberos_client_realm_name: EXAMPLE.COM
