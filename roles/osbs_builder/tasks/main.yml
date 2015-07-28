@@ -5,7 +5,6 @@
   - bind-utils
   - iptables-services
   - bridge-utils
-  - dock
   - docker
   - docker-registry
 
@@ -123,17 +122,3 @@
     dest: "{{ ansible_env.HOME }}/.bashrc"
     regexp: "export KUBECONFIG="
     line: "export KUBECONFIG={{ kubeconfig_path }}"
-
-### buildroot image ###
-
-- name: pull buildroot image
-  command: docker pull {{ buildroot_pull.registry }}/{{ buildroot_pull.image }}
-  register: pull_buildroot
-  when: not buildroot_from_source
-
-- name: tag buildroot image
-  command: docker tag -f {{ buildroot_pull.registry }}/{{ buildroot_pull.image }} {{ buildroot_tag }}
-  when: pull_buildroot.changed
-
-- include: buildroot_from_source.yml
-  when: buildroot_from_source

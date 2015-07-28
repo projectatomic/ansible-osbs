@@ -48,6 +48,20 @@ machine as the openshift instance it is proxying.
 You also have to edit `site.yml` and set `behind_auth_proxy` parameter to
 `true` so that the OSBS only accepts connection through the proxy.
 
+### Usage for atomic-reactor development
+
+If you're woriking on atomic-reactor and often rebuild the build image,
+ansible-osbs can make it a little bit easier.
+
+Edit your `group_vars/all` to contain `atomic_reactor_source: git` and the
+`atomic_reactor_git` dictionary to point to the correct base image and your
+image's Dockerfile git repository.
+
+Now you can rebuild the atomic-reactor image by pushing your changes to git and
+then running:
+
+    ansible-playbook -i hosts atomic_reactor.yml
+
 ### Bugs
 
 If the playbook does not work for you, feel free to contact me:
