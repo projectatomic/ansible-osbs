@@ -15,11 +15,7 @@
 
 - name: configure docker
   template: src=sysconfig-docker.j2 dest=/etc/sysconfig/docker
-  register: docker_sysconfig
-
-- name: restart docker after changing configuration
-  service: name=docker state=restarted
-  when: docker_sysconfig.changed
+  notify: restart docker
 
 ### openshift service ###
 
@@ -56,11 +52,11 @@
 
 - name: configure openshift master
   template: src=master.yaml.j2 dest=/etc/openshift/master/master-config.yaml
-  register: openshift_master_config
+  notify: restart openshift-master
 
 - name: configure openshift node
   template: src=node.yaml.j2 dest=/etc/openshift/node/node-config.yaml
-  register: openshift_node_config
+  notify: restart openshift-node
 
 - name: generate cert for authenticating proxy - self-signed certificate
   command: >
@@ -79,13 +75,8 @@
   command: openssl rsa -in {{ proxy_auth_key_file }} -out {{ proxy_auth_key_file }}
   when: auth_proxy_cert.changed
 
-- name: restart openshift master after changing configuration
-  service: name=openshift-master state=restarted
-  when: openshift_master_config.changed
-
-- name: restart openshift node after changing configuration
-  service: name=openshift-node state=restarted
-  when: openshift_node_config.changed
+# We need to have openshift restarted in order to configure authentication.
+- meta: flush_handlers
 
 - name: ensure openshift is running
   service: name=openshift-{{ item }} state=started enabled=yes
