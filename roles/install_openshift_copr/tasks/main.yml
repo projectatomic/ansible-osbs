@@ -5,5 +5,5 @@
 - name: install openshift
   yum: name={{ item }} state=installed
   with_items:
-  - openshift-master
-  - openshift-node
+  - openshift-master-{{ openshift_version }}
+  - openshift-node-{{ openshift_version }}
