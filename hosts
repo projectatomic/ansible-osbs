@@ -1,5 +1,5 @@
 [osv3_masters]
 rhel71 ansible_ssh_user=root
 
-[krb_proxies]
+[auth_proxies]
 #rhel71 ansible_ssh_user=root

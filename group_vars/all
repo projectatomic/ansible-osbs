@@ -31,28 +31,33 @@
 #insecure_registries:
 #  - registry.example.org
 
+# set to false if you don't use firewalld or do not want the playbook to modify it
+#manage_firewall: true
+
 ## for authenticating the proxy to openshift using self-signed certificate
 #proxy_auth_generate_selfsigned: true
 #proxy_auth_cert_file: "{{ openshift_home }}/proxy_auth_cert.pem"
 #proxy_auth_key_file: "{{ openshift_home }}/proxy_auth_key.pem"
 #proxy_auth_ca_file: "{{ proxy_auth_cert_file }}"
 
-## kerberos
-#kerberos_client_realm_name: EXAMPLE.COM
-#kerberos_client_kdc_hostname: kerberos.brq
-#kerberos_client_admin_hostname: kerberos.brq
-
-#proxy_authname: OSBS Kerberos Authentication
-
 # used for mutually authenticating the proxy and the proxied machine
 #proxy_machine_ca_file: /var/lib/openshift/openshift.local.certificates/ca/cert.crt
 #proxy_machine_cert_file: /var/lib/openshift/proxy_auth_cert.pem
 #proxy_machine_key_file: /var/lib/openshift/proxy_auth_key.pem
 
+## kerberos auth
+#proxy_type: kerberos
+#kerberos_client_realm_name: EXAMPLE.COM
+#kerberos_client_kdc_hostname: kerberos.brq
+#kerberos_client_admin_hostname: kerberos.brq
+
+## http basic auth
+#proxy_type: basic
+#proxy_basic_users:
+#  - user: test
+#    password: test
+
 # manually assign openshift user account to an IP or IP range
 #proxy_ip_whitelist:
 #  - subnet: 1.2.3.4
 #    user: kojibuilder
-
-# set to false if you don't use firewalld or do not want the playbook to modify it
-#manage_firewall: true

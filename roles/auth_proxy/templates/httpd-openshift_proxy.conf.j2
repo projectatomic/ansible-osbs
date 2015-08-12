@@ -50,17 +50,27 @@ LogLevel Debug
             RequestHeader set X-Remote-User {{ w.user }}
         </ElseIf>
 {% endfor %}
+{% if proxy_type == 'kerberos' %}
         <Else>
             AuthType Kerberos
             AuthName "{{ proxy_authname }}"
             KrbMethodNegotiate on
-            KrbMethodK5Passwd {{ 'on' if proxy_enable_password_login else 'off' }}
+            KrbMethodK5Passwd {{ 'on' if proxy_kerberos_password_login else 'off' }}
             KrbServiceName Any
             KrbAuthRealms {{ kerberos_client_realm_name }}
-            Krb5Keytab {{ krb_keytab_file }}
+            Krb5Keytab {{ proxy_kerberos_keytab_file }}
             Require valid-user
             RequestHeader set X-Remote-User %{REMOTE_USER}s
         </Else>
+{% elif proxy_type == 'basic' %}
+        <Else>
+            AuthType basic
+            AuthUserFile {{ proxy_basic_htpasswd_file }}
+            AuthName "{{ proxy_authname }}"
+            Require valid-user
+            RequestHeader set X-Remote-User %{REMOTE_USER}s
+        </Else>
+{% endif %}
         RequestHeader unset Authorization
         RequestHeader unset WWW-Authenticate
     </ProxyMatch>

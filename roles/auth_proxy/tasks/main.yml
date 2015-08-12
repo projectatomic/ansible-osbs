@@ -1,20 +1,22 @@
 ---
+- name: check playbook configuration
+  assert:
+    that: proxy_type == 'basic' or proxy_type == 'kerberos'
+
 - name: ensure required packages are installed
   yum: name={{ item }} state=present
   with_items:
-  # kerberos
-  - krb5-workstation
   # httpd
   - httpd
   - mod_ssl
-  - mod_auth_kerb
   # selinux
   - policycoreutils-python
 
-# Based on https://github.com/bennojoy/kerberos_client
-# BSD licensed
-- name: configure kerberos client
-  template: src=krb5.conf.j2 dest=/etc/krb5.conf
+- include: kerberos.yml
+  when: proxy_type == 'kerberos'
+
+- include: basic.yml
+  when: proxy_type == 'basic'
 
 - name: generate self-signed certificate
   command: >
@@ -60,16 +62,8 @@
   command: cp {{ proxy_machine_ca_file }} {{ ssl_client_ca_file }}
   when: proxy_machine_ca_file is defined
 
-- name: set permissions on kerberos keytab
-  file:
-    path: "{{ krb_keytab_file }}"
-    state: file
-    owner: "{{ proxy_secrets_owner }}"
-    group: "{{ proxy_secrets_group }}"
-    mode: "{{ proxy_secrets_perms }}"
-
 - name: configure httpd
-  template: src=httpd-krbproxy.conf.j2 dest=/etc/httpd/conf.d/krbproxy.conf
+  template: src=httpd-openshift_proxy.conf.j2 dest=/etc/httpd/conf.d/openshift_proxy.conf
   notify:
   - restart httpd
 

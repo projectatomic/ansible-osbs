@@ -21,7 +21,7 @@ non-root):
     [osv3_masters]
     hostname_or_ip_of_your_host ansible_ssh_user=root
 
-Leave the `krb_proxies` empty for now.
+Leave the `auth_proxies` empty for now.
 
 Execute the playbook by running:
 
@@ -35,18 +35,22 @@ If it fails you can get more information by running ansible-playbook with the
 You can override the default settings in `group_vars/all` for all hosts. See
 the file for some examples.
 
-#### Kerberos proxy
+#### Authenticating proxy
 
 The playbook can also install apache httpd and configure it as a reverse proxy
-for the OSBS that requires valid kerberos ticket. You need to have a kerberos
-keytab in order for this to work.
+for the OSBS that requires some form of authentication.
 
-To enable the kerberos proxy, edit `hosts` and include your host in
-`krb_proxies` section. Note that currently the proxy has to be on the same
-machine as the openshift instance it is proxying.
+To enable the proxy, edit `hosts` and include your host in `auth_proxies`
+section. Note that currently the proxy has to be on the same machine as the
+openshift instance it is proxying.
 
 You also have to edit `site.yml` and set `behind_auth_proxy` parameter to
 `true` so that the OSBS only accepts connection through the proxy.
+
+There are two forms of authentication supported - kerberos and HTTP basic
+authentication. Kerberos proxy requires valid keytab in order to work. The
+basic authentication is mostly useful for development/debugging when you don't
+have a keytab available.
 
 ### Usage for atomic-reactor development
 

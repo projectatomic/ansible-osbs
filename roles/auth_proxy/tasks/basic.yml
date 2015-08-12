@@ -1,0 +1,14 @@
+---
+- name: install python-passlib for adding httpasswd entries
+  yum: name=python-passlib state=present
+  when: proxy_basic_users != []
+
+- name: initialize htpasswd file
+  htpasswd:
+    path: "{{ proxy_basic_htpasswd_file }}"
+    name: "{{ item.user }}"
+    password: "{{ item.password }}"
+    owner: "{{ proxy_secrets_owner }}"
+    group: "{{ proxy_secrets_group }}"
+    mode: "{{ proxy_secrets_perms }}"
+  with_items: proxy_basic_users

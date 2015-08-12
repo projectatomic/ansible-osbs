@@ -14,7 +14,7 @@
   # useful mostly for ARM builds or building unreleased git versions
   #- install_openshift_source
 
-  # change behind_auth_proxy to true when using kerberos proxy
+  # change behind_auth_proxy to true when using authenticating proxy
   - { role: osbs_builder, behind_auth_proxy: false }
 
   # Pull or build atomic-reactor build image
@@ -26,7 +26,7 @@
   # files.
   #- { role: pulp_secret, pulp_secret_local_dir: /home/username/.pulp }
 
-- name: set up kerberos proxy
-  hosts: krb_proxies
+- name: set up authenticating proxy
+  hosts: auth_proxies
   roles:
-  - kerberos_proxy
+  - auth_proxy
