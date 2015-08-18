@@ -88,22 +88,32 @@
   wait_for: port={{ openshift_port }} timeout=30
 
 # Set up authorization policy. If we are behind proxy then assign authenticated
-# users the "edit" role which can start builds and watch build logs.
+# users the "osbs-builder" role which can start builds and watch build logs.
 # If we are not (=debug), add both authenticated and unauthenticated users to
 # the role.
+- name: copy osbs-builder role definition
+  copy: src=openshift-role-osbs-builder.yml dest={{ openshift_home }}/role-osbs-builder.yml
+
+- name: import the osbs-builder role
+  command: oc replace --force=true --filename={{ openshift_home }}/role-osbs-builder.yml
+  environment: oc_environment
+
 - name: openshift auth - clear
-  command: oadm policy remove-role-from-group edit system:authenticated system:unauthenticated
+  command: oadm policy remove-role-from-group {{ item }} system:authenticated system:unauthenticated
   environment: oc_environment
   register: command_result
   failed_when: "command_result | failed and 'unable to locate RoleBinding' not in command_result.stderr"
+  with_items:
+  - edit
+  - osbs-builder
 
 - name: openshift auth - make everyone cluster admin
-  command: oadm policy add-role-to-group edit system:unauthenticated system:authenticated
+  command: oadm policy add-role-to-group osbs-builder system:unauthenticated system:authenticated
   environment: oc_environment
   when: not behind_auth_proxy
 
 - name: openshift auth - authenticated users are cluster admins
-  command: oadm policy add-role-to-group edit system:authenticated
+  command: oadm policy add-role-to-group osbs-builder system:authenticated
   environment: oc_environment
   when: behind_auth_proxy
 
