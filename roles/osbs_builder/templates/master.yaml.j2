@@ -81,8 +81,7 @@ oauthConfig:
   grantConfig:
     method: auto
   identityProviders:
-{% if behind_auth_proxy %}
-  - name: my_request_header_provider
+  - name: request_header
     challenge: false
     login: false
     provider:
@@ -91,14 +90,6 @@ oauthConfig:
       clientCA: {{ proxy_auth_ca_file | default('/etc/openshift/master/ca.crt') }}
       headers:
       - X-Remote-User
-{% else %}
-  - challenge: true
-    login: true
-    name: anypassword
-    provider:
-      apiVersion: v1
-      kind: AllowAllPasswordIdentityProvider
-{% endif %}
   masterPublicURL: https://{{ ansible_default_ipv4.address }}:8443
   masterURL: https://{{ ansible_default_ipv4.address }}:8443
   sessionConfig:

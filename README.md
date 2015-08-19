@@ -2,15 +2,15 @@
 
 RHEL 7 Server, CentOS 7, or Fedora host that has:
 
-* yum repostiories configured (using subscription-manager in case of RHEL),
+* yum repositories configured (using subscription-manager in case of RHEL),
 * a hostname that resolves to the host's IP (at least) on the host itself,
 * python installed, and
-* ssh server running, preferrably configured so that you can log in using
+* ssh server running, preferably configured so that you can log in using
   ssh key.
 
 ### Usage
 
-You should be able to use the plabook to deploy OSBS suitable for development
+You should be able to use the playbook to deploy OSBS suitable for development
 (i.e. with authentication disabled) by editing the `hosts` file to include your
 hosts.
 
@@ -52,9 +52,15 @@ authentication. Kerberos proxy requires valid keytab in order to work. The
 basic authentication is mostly useful for development/debugging when you don't
 have a keytab available.
 
+In default configuration starting builds is allowed even for unauthenticated
+users. You need to change the `readwrite_groups` (and related) variables in
+`group_vars/all` in order to restrict it to authenticated users only. Please
+refer to [OpenShift documentation][2] for more information about authorization
+policies.
+
 ### Usage for atomic-reactor development
 
-If you're woriking on atomic-reactor and often rebuild the build image,
+If you're working on atomic-reactor and often rebuild the build image,
 ansible-osbs can make it a little bit easier.
 
 Edit your `group_vars/all` to contain `atomic_reactor_source: git` and the
@@ -73,3 +79,4 @@ If the playbook does not work for you, feel free to contact me:
 * Martin Milata <mmilata@redhat.com>
 
 [1]: http://docs.ansible.com/intro_inventory.html#list-of-behavioral-inventory-parameters
+[2]: https://docs.openshift.org/latest/admin_guide/manage_authorization_policy.html

@@ -61,3 +61,38 @@
 #proxy_ip_whitelist:
 #  - subnet: 1.2.3.4
 #    user: kojibuilder
+
+# openshift authorization - which users should be assigned the view (readonly),
+# osbs-builder (readwrite), and cluster-admin (admin) roles
+
+## in default configuration, everyone has read/write access:
+#readonly_users: []
+#readonly_groups: []
+#readwrite_users: []
+#readwrite_groups:
+#  - system:authenticated
+#  - system:unauthenticated
+#admin_users: []
+#admin_groups: []
+
+## development w/ auth proxy:
+#readonly_users: []
+#readonly_groups: []
+#readwrite_users: []
+#readwrite_groups:
+#  - system:authenticated
+#admin_users: []
+#admin_groups: []
+
+## example production configuration:
+#readonly_users: []
+#readonly_groups:
+#  - system:authenticated
+#readwrite_groups: []
+#readwrite_users:
+#  - kojibuilder
+#  - "{{ ansible_hostname }}"
+#admin_users:
+#  - foo@EXAMPLE.COM
+#  - bar@EXAMPLE.COM
+#admin_groups: []

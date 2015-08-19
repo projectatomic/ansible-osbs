@@ -91,31 +91,47 @@
 # users the "osbs-builder" role which can start builds and watch build logs.
 # If we are not (=debug), add both authenticated and unauthenticated users to
 # the role.
+- name: openshift auth - clear legacy configuration
+  command: oadm policy remove-role-from-group edit system:authenticated system:unauthenticated
+  environment: oc_environment
+  register: command_result
+  failed_when: "command_result | failed and 'unable to locate RoleBinding' not in command_result.stderr"
+  tags: authorization
+
 - name: copy osbs-builder role definition
   copy: src=openshift-role-osbs-builder.yml dest={{ openshift_home }}/role-osbs-builder.yml
+  tags: authorization
 
 - name: import the osbs-builder role
   command: oc replace --force=true --filename={{ openshift_home }}/role-osbs-builder.yml
   environment: oc_environment
+  tags: authorization
 
-- name: openshift auth - clear
-  command: oadm policy remove-role-from-group {{ item }} system:authenticated system:unauthenticated
-  environment: oc_environment
-  register: command_result
-  failed_when: "command_result | failed and 'unable to locate RoleBinding' not in command_result.stderr"
+- name: copy role bindings
+  template: src=openshift-rolebinding.yml.j2 dest={{ openshift_home }}/rolebinding-{{ item.name }}.yml
   with_items:
-  - edit
-  - osbs-builder
+  - name: osbs-readonly
+    role: view
+    users: "{{ readonly_users }}"
+    groups: "{{ readonly_groups }}"
+  - name: osbs-readwrite
+    role: osbs-builder
+    users: "{{ readwrite_users }}"
+    groups: "{{ readwrite_groups }}"
+  - name: osbs-admin
+    role: cluster-admin
+    users: "{{ admin_users }}"
+    groups: "{{ admin_groups }}"
+  tags: authorization
 
-- name: openshift auth - make everyone cluster admin
-  command: oadm policy add-role-to-group osbs-builder system:unauthenticated system:authenticated
+- name: import the role bindings
+  command: oc replace --force=true --filename={{ openshift_home }}/rolebinding-{{ item }}.yml
   environment: oc_environment
-  when: not behind_auth_proxy
-
-- name: openshift auth - authenticated users are cluster admins
-  command: oadm policy add-role-to-group osbs-builder system:authenticated
-  environment: oc_environment
-  when: behind_auth_proxy
+  with_items:
+  - osbs-readonly
+  - osbs-readwrite
+  - osbs-admin
+  tags: authorization
 
 # Useful when using "oc" to inspect openshift state.
 - name: add KUBECONFIG to .bashrc
