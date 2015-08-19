@@ -1,4 +1,4 @@
-allowDisabledDocker: true
+allowDisabledDocker: false
 apiVersion: v1
 dnsDomain: cluster.local
 dnsIP: {{ ansible_default_ipv4.address }}
@@ -14,6 +14,7 @@ nodeName: {{ ansible_fqdn }}
 podManifestConfig: null
 servingInfo:
   bindAddress: 0.0.0.0:10250
+  bindNetwork: tcp4
   certFile: server.crt
   clientCA: node-client-ca.crt
   keyFile: server.key

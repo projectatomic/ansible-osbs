@@ -40,3 +40,6 @@
 
 - name: install the RPMs
   shell: yum -y localinstall {{ rpmbuild_dir }}/RPMS/x86_64/*openshift*.rpm
+
+- name: link /etc/openshift to /etc/origin
+  file: path=/etc/openshift src=/etc/origin state=link

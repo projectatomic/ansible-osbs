@@ -8,18 +8,22 @@ assetConfig:
   publicURL: https://{{ ansible_default_ipv4.address }}:8443/console/
   servingInfo:
     bindAddress: 0.0.0.0:8443
+    bindNetwork: tcp4
     certFile: master.server.crt
     clientCA: ""
     keyFile: master.server.key
     maxRequestsInFlight: 0
     requestTimeoutSeconds: 0
+controllerLeaseTTL: 0
 controllers: '*'
 corsAllowedOrigins:
 - 127.0.0.1
 - {{ ansible_default_ipv4.address }}:8443
 - localhost
+disabledFeatures: null
 dnsConfig:
   bindAddress: 0.0.0.0:53
+  bindNetwork: tcp4
 etcdClientInfo:
   ca: ca.crt
   certFile: master.etcd-client.crt
@@ -31,11 +35,13 @@ etcdConfig:
   peerAddress: {{ ansible_default_ipv4.address }}:7001
   peerServingInfo:
     bindAddress: 0.0.0.0:7001
+    bindNetwork: tcp4
     certFile: etcd.server.crt
     clientCA: ca.crt
     keyFile: etcd.server.key
   servingInfo:
     bindAddress: 0.0.0.0:4001
+    bindNetwork: tcp4
     certFile: etcd.server.crt
     clientCA: ca.crt
     keyFile: etcd.server.key
@@ -99,6 +105,7 @@ oauthConfig:
   tokenConfig:
     accessTokenMaxAgeSeconds: 86400
     authorizeTokenMaxAgeSeconds: 300
+pauseControllers: false
 policyConfig:
   bootstrapPolicyFile: policy.json
   openshiftInfrastructureNamespace: openshift-infra
@@ -124,6 +131,7 @@ serviceAccountConfig:
   - serviceaccounts.public.key
 servingInfo:
   bindAddress: 0.0.0.0:8443
+  bindNetwork: tcp4
   certFile: master.server.crt
   clientCA: ca.crt
   keyFile: master.server.key
