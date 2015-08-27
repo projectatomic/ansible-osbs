@@ -5,8 +5,12 @@
   - bind-utils
   - iptables-services
   - bridge-utils
-  - docker
+  #- docker
   - docker-registry
+
+- name: update docker
+  yum: name=docker state=latest
+  notify: restart docker
 
 ### docker service ###
 
