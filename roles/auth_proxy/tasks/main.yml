@@ -63,7 +63,7 @@
   when: proxy_machine_ca_file is defined
 
 - name: configure httpd
-  template: src=httpd-openshift_proxy.conf.j2 dest=/etc/httpd/conf.d/openshift_proxy.conf
+  template: src=httpd-openshift_proxy.conf.j2 dest={{ proxy_httpd_conf_path }}
   notify:
   - restart httpd
 

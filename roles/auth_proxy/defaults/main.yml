@@ -7,6 +7,8 @@ ssl_key_file: /etc/pki/tls/private/{{ ansible_fqdn }}.key
 ssl_client_certkey_file: /etc/httpd/openshift_proxy_certkey.crt
 ssl_client_ca_file: /etc/httpd/openshift_proxy_ca.crt
 
+proxy_httpd_conf_path: /etc/httpd/conf.d/openshift_proxy.conf
+
 # supported: kerberos or basic
 proxy_type: kerberos
 
