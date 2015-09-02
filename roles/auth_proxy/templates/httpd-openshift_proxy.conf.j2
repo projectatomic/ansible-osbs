@@ -29,7 +29,7 @@ LogLevel Debug
     SetEnv proxy-sendchunked 1
     ProxyRequests Off
     <Location "/">
-        ProxyPass {{ proxy_dest_url }} connectiontimeout=30 timeout=300
+        ProxyPass {{ proxy_dest_url }} connectiontimeout=30 timeout=3600
         ProxyPassReverse {{ proxy_dest_url }}
     </Location>
 
