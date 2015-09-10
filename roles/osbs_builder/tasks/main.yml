@@ -137,6 +137,13 @@
   - osbs-admin
   tags: authorization
 
+- name: copy resource quotas
+  template: src=openshift-resourcequota.yml.j2 dest={{ openshift_home }}/resourcequota.yml
+
+- name: import resource quotas
+  command: oc replace --force=true --filename={{ openshift_home }}/resourcequota.yml
+  environment: oc_environment
+
 # Useful when using "oc" to inspect openshift state.
 - name: add KUBECONFIG to .bashrc
   lineinfile:

@@ -43,3 +43,6 @@ admin_groups: []
 #  - foo@EXAMPLE.COM
 #  - bar@EXAMPLE.COM
 #admin_groups: []
+
+# limit on the number of running pods
+osbs_max_pods: 3
