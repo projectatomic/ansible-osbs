@@ -1,6 +1,22 @@
 ---
+- name: check that we only have one secret source defined
+  assert:
+    that:
+      - "pulp_secret_local_dir is defined or pulp_secret_remote_dir is defined"
+      - "not (pulp_secret_local_dir is defined and pulp_secret_remote_dir is defined)"
+
+- name: make temporary directory to store the keys
+  command: mktemp -d /tmp/tmp-pulp-secrets-XXXXXX
+  register: mktemp_result
+  when: pulp_secret_local_dir is defined
+
+- name: remember location of the temporary directory
+  set_fact: pulp_secret_remote_dir={{ mktemp_result.stdout }}
+  when: pulp_secret_local_dir is defined
+
 - name: copy the keys to remote host
   copy: src={{ pulp_secret_local_dir }}/ dest={{ pulp_secret_remote_dir }}
+  when: pulp_secret_local_dir is defined
 
 - name: register keys to openshift
   command: oc secrets new {{ pulp_secret_name }} pulp.cer={{ pulp_secret_remote_dir }}/pulp.cer pulp.key={{ pulp_secret_remote_dir }}/pulp.key
@@ -14,5 +30,6 @@
   environment:
     KUBECONFIG: "{{ pulp_secret_kubeconfig }}"
 
-- name: delete the keys from remote host
+- name: delete the temporary directory
   file: path={{ pulp_secret_remote_dir }} state=absent
+  when: pulp_secret_local_dir is defined
