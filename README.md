@@ -8,6 +8,21 @@ RHEL 7 Server, CentOS 7, or Fedora host that has:
 * ssh server running, preferably configured so that you can log in using
   ssh key.
 
+#### Downloading the external roles
+
+Most of the playbook is hosted in [separate git
+repositories](https://github.com/projectatomic?query=ansible-role) in the form
+of [roles](http://docs.ansible.com/ansible/playbooks_roles.html). In order to
+download the roles before using the playbook for the first time, you need to
+run the included shell script:
+
+    ./update-roles.sh
+
+You also have to run this script whenever you feel the roles may have been
+updated. If you intend to hack on this playbook it might be more convenient to
+clone the roles to your machine and then symlink the repositories into the
+`roles` directory of this repository.
+
 ### Usage
 
 You should be able to use the playbook to deploy OSBS suitable for development
@@ -20,6 +35,11 @@ non-root):
 
     [osv3_masters]
     hostname_or_ip_of_your_host ansible_ssh_user=root
+
+If you are using vagrant, the section will look as follows:
+
+    [osv3_masters]
+    hostname_or_ip_of_your_host ansible_ssh_user=vagrant ansible_sudo=true
 
 Leave the `auth_proxies` empty for now.
 
@@ -44,19 +64,20 @@ To enable the proxy, edit `hosts` and include your host in `auth_proxies`
 section. Note that currently the proxy has to be on the same machine as the
 openshift instance it is proxying.
 
-You also have to edit `site.yml` and set `behind_auth_proxy` parameter to
-`true` so that the OSBS only accepts connection through the proxy.
-
-There are two forms of authentication supported - kerberos and HTTP basic
-authentication. Kerberos proxy requires valid keytab in order to work. The
-basic authentication is mostly useful for development/debugging when you don't
-have a keytab available.
+There are two forms of authentication supported - kerberos and HTTP plain
+authentication based on static `.htpasswd` file. Kerberos proxy requires valid
+keytab in order to work. The basic authentication is mostly useful for
+development/debugging when you don't have a keytab available.
 
 In default configuration starting builds is allowed even for unauthenticated
 users. You need to change the `readwrite_groups` (and related) variables in
 `group_vars/all` in order to restrict it to authenticated users only. Please
 refer to [OpenShift documentation][2] for more information about authorization
 policies.
+
+If you want simple password based proxy for development, there are couple of
+lines in `site.yml` you can uncomment (or set the same variables in
+`group_vars/all`).
 
 ### Usage for atomic-reactor development
 

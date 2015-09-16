@@ -1,7 +1,0 @@
----
-openshift_home: /var/lib/openshift
-kubeconfig_path: /etc/openshift/master/admin.kubeconfig
-openshift_port: 8443
-
-oc_environment:
-  KUBECONFIG: "{{ kubeconfig_path }}"

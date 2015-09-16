@@ -1,6 +1,0 @@
----
-- include: source_pull.yml
-  when: atomic_reactor_source == 'pull'
-
-- include: source_git.yml
-  when: atomic_reactor_source == 'git'

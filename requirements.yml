@@ -1,0 +1,20 @@
+---
+- src: https://github.com/projectatomic/ansible-role-install-openshift.git
+  name: install-openshift
+  version: master
+
+- src: https://github.com/projectatomic/ansible-role-osbs-master.git
+  name: osbs-master
+  version: master
+
+- src: https://github.com/projectatomic/ansible-role-atomic-reactor.git
+  name: atomic-reactor
+  version: master
+
+- src: https://github.com/projectatomic/ansible-role-osbs-proxy.git
+  name: osbs-proxy
+  version: master
+
+- src: https://github.com/projectatomic/ansible-role-pulp-secret.git
+  name: pulp-secret
+  version: master

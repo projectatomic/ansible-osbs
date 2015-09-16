@@ -27,8 +27,8 @@
 
 - name: install firewalld
   yum: name=firewalld state=installed
-  when: manage_firewall
+  when: osbs_manage_firewalld
 
 - name: enable firewalld
   service: name=firewalld state=started enabled=yes
-  when: manage_firewall
+  when: osbs_manage_firewalld

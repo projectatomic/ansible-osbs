@@ -28,71 +28,72 @@
 
 # Docker needs to know which registries are insecure. If you're pulling
 # atomic-reactor image from insecure registry you also need to put it here.
-#insecure_registries:
+#osbs_docker_insecure_registries:
 #  - registry.example.org
 
-# set to false if you don't use firewalld or do not want the playbook to modify it
-#manage_firewall: true
+# Set to false if you don't use firewalld or do not want the playbook to modify it.
+#osbs_manage_firewalld: true
 
-## for authenticating the proxy to openshift using self-signed certificate
-#proxy_auth_generate_selfsigned: true
-#proxy_auth_cert_file: "{{ openshift_home }}/proxy_auth_cert.pem"
-#proxy_auth_key_file: "{{ openshift_home }}/proxy_auth_key.pem"
-#proxy_auth_ca_file: "{{ proxy_auth_cert_file }}"
+# Expose the OpenShift port to the outside world? Set this to false when using
+# authenticating proxy on the localhost. Has no effect if osbs_manage_firewalld
+# is false.
+#osbs_master_expose_port: true
 
-# used for mutually authenticating the proxy and the proxied machine
-#proxy_machine_ca_file: /var/lib/openshift/openshift.local.certificates/ca/cert.crt
-#proxy_machine_cert_file: /var/lib/openshift/proxy_auth_cert.pem
-#proxy_machine_key_file: /var/lib/openshift/proxy_auth_key.pem
+# Paths to SSL certificates the for the authenticating proxy that will be
+# presented to the clients. If they are not found and
+# osbs_proxy_ssl_generate_selfsigned is true then self-signed certificate will
+# be generated.
+#osbs_proxy_ssl_generate_selfsigned: true
+#osbs_proxy_ssl_cert_file: /etc/pki/tls/certs/{{ ansible_fqdn }}.crt
+#osbs_proxy_ssl_key_file: /etc/pki/tls/private/{{ ansible_fqdn }}.key
 
-## kerberos auth
-#proxy_type: kerberos
-#kerberos_client_realm_name: EXAMPLE.COM
-#kerberos_client_kdc_hostname: kerberos.brq
-#kerberos_client_admin_hostname: kerberos.brq
+# Kerberos auth - please note that kerberos client has to be set up on the
+# host, possibly using third-party ansible role.
+#osbs_proxy_type: kerberos
+#osbs_proxy_kerberos_keytab_file: /etc/httpd/HTTP-{{ ansible_fqdn }}.keytab
 
-## http basic auth
-#proxy_type: basic
-#proxy_basic_users:
+# HTTP plain auth using static .htpasswd file.
+#osbs_proxy_type: htpasswd
+#osbs_proxy_htpasswd_users:
 #  - user: test
 #    password: test
 
-# manually assign openshift user account to an IP or IP range
-#proxy_ip_whitelist:
+# Manually assign openshift user account to an IP or IP range.
+#osbs_proxy_ip_whitelist:
 #  - subnet: 1.2.3.4
 #    user: kojibuilder
 
-# openshift authorization - which users should be assigned the view (readonly),
-# osbs-builder (readwrite), and cluster-admin (admin) roles
+# OpenShift authorization - which users should be assigned the view (readonly),
+# osbs-builder (readwrite), and cluster-admin (admin) roles.
 
-## in default configuration, everyone has read/write access:
-#readonly_users: []
-#readonly_groups: []
-#readwrite_users: []
-#readwrite_groups:
+# In default configuration, everyone has read/write access:
+#osbs_readonly_users: []
+#osbs_readonly_groups: []
+#osbs_readwrite_users: []
+#osbs_readwrite_groups:
 #  - system:authenticated
 #  - system:unauthenticated
-#admin_users: []
-#admin_groups: []
+#osbs_admin_users: []
+#osbs_admin_groups: []
 
-## development w/ auth proxy:
-#readonly_users: []
-#readonly_groups: []
-#readwrite_users: []
-#readwrite_groups:
+# Development w/ auth proxy:
+#osbs_readonly_users: []
+#osbs_readonly_groups: []
+#osbs_readwrite_users: []
+#osbs_readwrite_groups:
 #  - system:authenticated
-#admin_users: []
-#admin_groups: []
+#osbs_admin_users: []
+#osbs_admin_groups: []
 
-## example production configuration:
-#readonly_users: []
-#readonly_groups:
+# Example production configuration:
+#osbs_readonly_users: []
+#osbs_readonly_groups:
 #  - system:authenticated
-#readwrite_groups: []
-#readwrite_users:
+#osbs_osbs_readwrite_groups: []
+#osbs_osbs_readwrite_users:
 #  - kojibuilder
 #  - "{{ ansible_hostname }}"
-#admin_users:
+#osbs_admin_users:
 #  - foo@EXAMPLE.COM
 #  - bar@EXAMPLE.COM
-#admin_groups: []
+#osbs_admin_groups: []

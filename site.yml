@@ -7,26 +7,29 @@
 - name: set up openshift build hosts
   hosts: osv3_masters
   roles:
-  # uncomment one of these install methods:
-  # (this will eventually be replaced by some openshift role(s) from
-  # openshift-ansible)
-  - install_openshift_copr
-  # useful mostly for ARM builds or building unreleased git versions
-  #- install_openshift_source
+  # install openshift (configure the method in group_vars/all)
+  - install-openshift
 
-  # change behind_auth_proxy to true when using authenticating proxy
-  - { role: osbs_builder, behind_auth_proxy: false }
+  # set up OSBS builder
+  - osbs-master
 
-  # Pull or build atomic-reactor build image
-  - atomic_reactor
+  # pull or build the atomic-reactor build image
+  - atomic-reactor
 
   # If you want to import pulp certificate and key into openshift to be later
   # used by atomic-reactor, uncomment the following line and change
   # pulp_secret_local_dir to a directory that contains pulp.cer an pulp.key
-  # files.
-  #- { role: pulp_secret, pulp_secret_local_dir: /home/username/.pulp }
+  # files. If you already have the secrets on the remote machine use the second
+  # form below.
+  #- { role: pulp-secret, pulp_secret_local_dir: /home/username/.pulp }
+  #- { role: pulp-secret, pulp_secret_remote_dir: /mnt/sync/pulp_secrets }
 
 - name: set up authenticating proxy
   hosts: auth_proxies
   roles:
-  - auth_proxy
+  - role: osbs-proxy
+    # Uncomment the following lines for simple proxy suitable for development.
+    #osbs_proxy_ssl_generate_selfsigned: true
+    #osbs_proxy_htpasswd_users:
+    #- user: test
+    #  password: test
