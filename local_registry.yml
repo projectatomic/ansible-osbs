@@ -1,0 +1,18 @@
+---
+- name: set up local docker registry for development
+  hosts: osv3_masters
+  tasks:
+    - name: install docker-registry
+      yum: name=docker-registry state=present
+
+    - name: enable & start docker-registry
+      service: name=docker-registry state=started enabled=yes
+
+    - name: pull fedora image
+      command: docker pull fedora
+
+    - name: tag fedora image
+      command: docker tag -f fedora 172.17.42.1:5000/fedora
+
+    - name: push fedora image
+      command: docker push 172.17.42.1:5000/fedora
