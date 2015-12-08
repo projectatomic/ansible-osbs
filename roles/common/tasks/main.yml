@@ -13,6 +13,18 @@
   - net-tools
   - yum-utils
   - tree
+  when: ansible_pkg_mgr == "yum"
+
+- name: install basic packages
+  dnf: name={{ item }} state=installed
+  with_items:
+  - vim
+  - tmux
+  - wget
+  - git
+  - net-tools
+  - tree
+  when: ansible_pkg_mgr == "dnf"
 
 - name: enable rhel7 repos
   command: yum-config-manager --enable {{ item }}
@@ -27,7 +39,11 @@
 
 - name: install firewalld
   yum: name=firewalld state=installed
-  when: osbs_manage_firewalld
+  when: osbs_manage_firewalld and ansible_pkg_mgr == "yum"
+
+- name: install firewalld
+  dnf: name=firewalld state=installed
+  when: osbs_manage_firewalld and ansible_pkg_mgr == "dnf"
 
 - name: enable firewalld
   service: name=firewalld state=started enabled=yes

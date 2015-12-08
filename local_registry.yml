@@ -6,6 +6,11 @@
   tasks:
     - name: install docker-registry
       yum: name=docker-registry state=present
+      when: ansible_pkg_mgr == "yum"
+
+    - name: install docker-registry
+      dnf: name=docker-registry state=present
+      when: ansible_pkg_mgr == "dnf"
 
     - name: enable & start docker-registry
       service: name=docker-registry state=started enabled=yes

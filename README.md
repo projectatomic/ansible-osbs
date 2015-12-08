@@ -2,7 +2,7 @@
 
 RHEL 7 Server, CentOS 7, or Fedora host that has:
 
-* yum repositories configured (using subscription-manager in case of RHEL),
+* yum/dnf repositories configured (using subscription-manager in case of RHEL),
 * a hostname that resolves to the host's IP (at least) on the host itself,
 * python installed, and
 * ssh server running, preferably configured so that you can log in using
