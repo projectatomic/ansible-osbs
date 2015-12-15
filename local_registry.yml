@@ -5,12 +5,7 @@
     registry_location: 172.17.42.1:5000
   tasks:
     - name: install docker-registry
-      yum: name=docker-registry state=present
-      when: ansible_pkg_mgr == "yum"
-
-    - name: install docker-registry
-      dnf: name=docker-registry state=present
-      when: ansible_pkg_mgr == "dnf"
+      action: "{{ ansible_pkg_mgr }} name=docker-registry state=present"
 
     - name: enable & start docker-registry
       service: name=docker-registry state=started enabled=yes
