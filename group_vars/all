@@ -89,8 +89,8 @@
 #osbs_readonly_users: []
 #osbs_readonly_groups:
 #  - system:authenticated
-#osbs_osbs_readwrite_groups: []
-#osbs_osbs_readwrite_users:
+#osbs_readwrite_groups: []
+#osbs_readwrite_users:
 #  - kojibuilder
 #  - "{{ ansible_hostname }}"
 #  - system:serviceaccount:default:default
