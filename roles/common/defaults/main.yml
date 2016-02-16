@@ -4,3 +4,6 @@
 
 # set to false if you don't use firewalld or do not want the playbook to modify it
 osbs_manage_firewalld: true
+
+# docker needs to know which registries are insecure
+osbs_docker_insecure_registries: []
