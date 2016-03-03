@@ -43,7 +43,7 @@
 ### docker service ###
 
 - name: install packages required by osbs
-  yum: name=docker state=installed
+  action: "{{ ansible_pkg_mgr }} name=libselinux-python,docker state=installed"
 
 - name: configure docker
   template: src=sysconfig-docker.j2 dest=/etc/sysconfig/docker backup=yes
