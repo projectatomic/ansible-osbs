@@ -36,6 +36,10 @@
   service: name=firewalld state=started enabled=yes
   when: osbs_manage_firewalld
 
+- name: install python-firewalld
+  action: "{{ ansible_pkg_mgr }} name=python-firewall state=installed"
+  when: osbs_manage_firewalld
+
 ### docker service ###
 
 - name: install packages required by osbs
