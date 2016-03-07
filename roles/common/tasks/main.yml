@@ -3,6 +3,14 @@
   hostname: name={{ hostname }}
   when: hostname is defined
 
+- name: install yum-utils when using yum
+  command: yum install -y yum-utils
+  when: ansible_pkg_mgr == "yum"
+
+- name: install python-dnf when using dnf
+  command: dnf install -y python-dnf
+  when: ansible_pkg_mgr == "dnf"
+
 - name: install basic packages
   action: "{{ ansible_pkg_mgr }} name={{ item }} state=installed"
   with_items:
@@ -12,10 +20,6 @@
   - git
   - net-tools
   - tree
-
-- name: install yum-utils when using yum
-  yum: name=yum-utils state=installed
-  when: ansible_pkg_mgr == "yum"
 
 - name: enable rhel7 repos
   command: yum-config-manager --enable {{ item }}
