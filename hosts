@@ -1,5 +1,10 @@
 [osv3_masters]
-rhel71 ansible_ssh_user=root
+rhel72-master.example.org ansible_ssh_user=root
+
+[osv3_nodes]
+rhel72-master.example.org ansible_ssh_user=root
+rhel72-node1.example.org ansible_ssh_user=root
+rhel72-node2.example.org ansible_ssh_user=root
 
 [auth_proxies]
-#rhel71 ansible_ssh_user=root
+#rhel71-master.example.org ansible_ssh_user=root

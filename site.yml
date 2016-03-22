@@ -1,20 +1,17 @@
 ---
-- name: apply common configuration
+- name: apply common configuration and install openshift
   hosts: all
   roles:
   - common
-
-- name: set up openshift build hosts
-  hosts: osv3_masters
-  roles:
   # install openshift (configure the method in group_vars/all)
   - install-openshift
 
-  # set up OSBS builder
-  - osbs-master
 
-  # pull or build the atomic-reactor build image
-  - atomic-reactor
+- name: set up openshift master
+  hosts: osv3_masters
+  roles:
+  - role: osbs-master
+    osbs_nodes: "{{ groups['osv3_nodes'] }}"
 
   # If you want to import pulp certificate and key into openshift to be later
   # used by atomic-reactor, uncomment the following line and change
@@ -23,6 +20,15 @@
   # form below.
   #- { role: pulp-secret, pulp_secret_local_dir: /home/username/.pulp }
   #- { role: pulp-secret, pulp_secret_remote_dir: /mnt/sync/pulp_secrets }
+
+
+- name: set up openshift nodes
+  hosts: osv3_nodes
+  roles:
+  - osbs-node
+  # pull or build the atomic-reactor build image
+  - atomic-reactor
+
 
 - name: set up authenticating proxy
   hosts: auth_proxies

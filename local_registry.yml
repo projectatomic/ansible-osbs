@@ -1,6 +1,6 @@
 ---
 - name: set up local docker registry for development
-  hosts: osv3_masters
+  hosts: osv3_nodes
   vars:
     registry_location: 172.17.42.1:5000
   tasks:

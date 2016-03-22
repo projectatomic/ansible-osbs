@@ -1,5 +1,5 @@
 ---
 - name: ensure builders have atomic-reactor build image
-  hosts: osv3_masters
+  hosts: osv3_nodes
   roles:
   - atomic-reactor

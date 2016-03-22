@@ -7,6 +7,10 @@
   name: osbs-master
   version: master
 
+- src: https://github.com/projectatomic/ansible-role-osbs-node.git
+  name: osbs-node
+  version: master
+
 - src: https://github.com/projectatomic/ansible-role-atomic-reactor.git
   name: atomic-reactor
   version: master

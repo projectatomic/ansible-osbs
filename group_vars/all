@@ -98,3 +98,5 @@
 #  - foo@EXAMPLE.COM
 #  - bar@EXAMPLE.COM
 #osbs_admin_groups: []
+
+osbs_node_config_dir: openshift-node-configs
