@@ -42,7 +42,7 @@
 
 - name: install python-firewalld
   action: "{{ ansible_pkg_mgr }} name=python-firewall state=installed"
-  when: osbs_manage_firewalld
+  when: osbs_manage_firewalld and ansible_distribution == 'Fedora'
 
 ### docker service ###
 
