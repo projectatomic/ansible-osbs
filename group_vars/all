@@ -43,7 +43,7 @@
 # presented to the clients. If they are not found and
 # osbs_proxy_ssl_generate_selfsigned is true then self-signed certificate will
 # be generated.
-#osbs_proxy_ssl_generate_selfsigned: true
+osbs_proxy_ssl_generate_selfsigned: true
 #osbs_proxy_ssl_cert_file: /etc/pki/tls/certs/{{ ansible_fqdn }}.crt
 #osbs_proxy_ssl_key_file: /etc/pki/tls/private/{{ ansible_fqdn }}.key
 
@@ -53,10 +53,10 @@
 #osbs_proxy_kerberos_keytab_file: /etc/httpd/HTTP-{{ ansible_fqdn }}.keytab
 
 # HTTP plain auth using static .htpasswd file.
-#osbs_proxy_type: htpasswd
-#osbs_proxy_htpasswd_users:
-#  - user: test
-#    password: test
+osbs_proxy_type: htpasswd
+osbs_proxy_htpasswd_users:
+  - user: test
+    password: test
 
 # Manually assign openshift user account to an IP or IP range.
 #osbs_proxy_ip_whitelist:
